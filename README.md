@@ -1,4 +1,5 @@
 
+
 # Welcome to Ngikut Jetpack-Component
 <p align="Center">
   <img src="https://cdn.freebiesupply.com/logos/large/2x/kotlin-1-logo-png-transparent.png" height="128"/>
@@ -17,10 +18,10 @@
 <p align="center">Technologies we are using now</p>
 </p>
 
-`Cisu Jetpack-Component` is a library that can be used by Android (Jetpack Compose) Developer to made its developing easier. Right now we are targeting only Jetpack Compose, but not impossible if someday we release for other developing environment.
+`Ngikut Jetpack-Component` is a library that including components that might be used on most Android application. Now `Ngikut` is only available for Jetpack Compose, but gate not closed if I also make it into other environment.
 
 # Preparation
-Before you able to accessing `Cisu`, you have to know that we are using `Jitpack` to make this library public. So you have to include Jitpack inside your project first.
+Before you able to accessing `Ngikut`, you have to know that we are using `Jitpack` to make this library public. So you have to include Jitpack inside your project first.
 
 ### 1. Setup for Jitpack
 -   For old version of gradle (before arctic fox update)
@@ -51,7 +52,7 @@ Before you able to accessing `Cisu`, you have to know that we are using `Jitpack
     
     ```
     
-### 2. Setup Cisu to Your Dependency
+### 2. Setup Ngikut to Your Dependency
 
 -   After succesfully including Jitpack, right now you able to implement `Cisu` in your project.
 
@@ -62,15 +63,13 @@ Before you able to accessing `Cisu`, you have to know that we are using `Jitpack
         implementation 'com.github.fahmirumagutawan:Cisu-Jetpack-Component:$cisu_version'
     }
     ```
-    > You can find `cisu_version` on Jitpack Badge above, or on our release tag.
+    > -- Latest version is "..."
+    > -- You can find `ngikut_version` on Jitpack Badge above, or on our release tag.
 
 # Documentation
 
-### 1. [Cisu Splash Screen](https://github.com/fahmirumagutawan/Cisu-Jetpack-Component/blob/master/docs/CisuSplash.md) ✨
-- Cisu Splash Screen is a composable to help you instantly to make your own splash screen as easy as writing few lines of code.
-
-### 2. [Cisu Surface](https://github.com/fahmirumagutawan/Cisu-Jetpack-Component/blob/master/docs/CisuSurface.md) 📱
-- Have you ever felt that making page with bottom navigation bar in Jetpack Compose is kind of frustating. So you have to try this function then. 
+### 1. [Cisu Loading Layout](https://github.com/fahmirumagutawan/Cisu-Jetpack-Component/blob/master/docs/CisuSplash.md) 
+- `Ngikut Loading Layout` is a composable layout to place your content that include some various loading style.
 
 # Contact Me
 If you want to discuss about business, or maybe have a critic and advice. Feel free to be messaged everytime-everywhere. 
