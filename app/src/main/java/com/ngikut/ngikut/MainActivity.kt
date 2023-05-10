@@ -14,9 +14,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.ngikut.layout.component.NgikutCompleteLayout
+import com.ngikut.layout.component.NgikutLoadingLayout
 import com.ngikut.layout.util.NgikutLoadingType
-import com.ngikut.layout.util.rememberNgikutCompleteLayoutState
+import com.ngikut.layout.util.rememberNgikutLoadingLayoutState
 import com.ngikut.ngikut.ui.theme.NgikutJetpackComponentTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,11 +30,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val loading = remember { mutableStateOf(false) }
                     val pos = remember{ mutableStateOf(NgikutLoadingType.FromTop) }
-                    val state = rememberNgikutCompleteLayoutState(
+                    val state = rememberNgikutLoadingLayoutState(
                         state = loading.value
                     )
 
-                    NgikutCompleteLayout(
+                    NgikutLoadingLayout(
                         state = state,
                         loadingType = pos.value
                     ) {

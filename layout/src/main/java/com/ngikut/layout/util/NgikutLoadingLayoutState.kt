@@ -9,19 +9,19 @@ import androidx.compose.ui.unit.dp
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun rememberNgikutCompleteLayoutState(
+fun rememberNgikutLoadingLayoutState(
     state:Boolean,
     loadingRunningLength: Dp = 64.dp
-):NgikutCompleteLayoutState {
+):NgikutLoadingLayoutState {
     return remember{
-        NgikutCompleteLayoutState(state, loadingRunningLength)
+        NgikutLoadingLayoutState(state, loadingRunningLength)
     }.apply {
         this.isLoading.value = state
         this.loadingRunningLength.value = loadingRunningLength
     }
 }
 
-class NgikutCompleteLayoutState(
+class NgikutLoadingLayoutState(
     isLoading:Boolean,
     loadingRunningLength: Dp
 ) {

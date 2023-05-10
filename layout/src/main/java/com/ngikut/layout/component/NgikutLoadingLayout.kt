@@ -1,7 +1,6 @@
 package com.ngikut.layout.component
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -12,26 +11,25 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.ngikut.layout.util.NgikutCompleteLayoutState
+import com.ngikut.layout.util.NgikutLoadingLayoutState
 import com.ngikut.layout.util.NgikutLoadingType
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun NgikutCompleteLayout(
+fun NgikutLoadingLayout(
     modifier: Modifier = Modifier,
-    state: NgikutCompleteLayoutState,
+    state: NgikutLoadingLayoutState,
     runDuration: Int = 400,
     loadingIndicatorColor: Color = Color.Black,
     loadingType: NgikutLoadingType = NgikutLoadingType.FromTop,
@@ -42,14 +40,15 @@ fun NgikutCompleteLayout(
     val scrWidthInPx = density.run { LocalConfiguration.current.screenWidthDp.dp.toPx() }
     val loadingContentHeight = remember { mutableStateOf(0f) }
     val loadingContentWidth = remember { mutableStateOf(0f) }
+    val startLoadingState = remember { mutableStateOf(false) }
     val loadingProgress = animateFloatAsState(
-        targetValue = if (!state.isLoading.value) 0f else 1f,
+        targetValue = if (startLoadingState.value) 1f else 0f,
         animationSpec = TweenSpec(durationMillis = 200)
     )
     val loadingAnimateY = animateFloatAsState(
         targetValue = when (loadingType) {
-            NgikutLoadingType.FromTop -> if (!state.isLoading.value) (0 - loadingContentHeight.value) else density.run { state.loadingRunningLength.value.toPx() }
-            NgikutLoadingType.FromBottom -> if (!state.isLoading.value) (scrHeightInPx + loadingContentHeight.value) else density.run { scrHeightInPx - (state.loadingRunningLength.value.toPx() * 2) }
+            NgikutLoadingType.FromTop -> if (!startLoadingState.value) (0 - loadingContentHeight.value) else density.run { state.loadingRunningLength.value.toPx() }
+            NgikutLoadingType.FromBottom -> if (!startLoadingState.value) (scrHeightInPx + loadingContentHeight.value) else density.run { scrHeightInPx - (state.loadingRunningLength.value.toPx() * 2) }
             NgikutLoadingType.FromStart -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.FromEnd -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.MiddleWithBlurryBackground -> scrHeightInPx / 2 - loadingContentHeight.value / 2
@@ -61,54 +60,36 @@ fun NgikutCompleteLayout(
         targetValue = when (loadingType) {
             NgikutLoadingType.FromTop -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.FromBottom -> scrWidthInPx / 2 - loadingContentWidth.value / 2
-            NgikutLoadingType.FromStart -> if (!state.isLoading.value) (0 - loadingContentWidth.value) else density.run { state.loadingRunningLength.value.toPx() }
-            NgikutLoadingType.FromEnd -> if (!state.isLoading.value) (scrWidthInPx + loadingContentWidth.value) else density.run { scrWidthInPx - (state.loadingRunningLength.value.toPx() * 2) }
+            NgikutLoadingType.FromStart -> if (!startLoadingState.value) (0 - loadingContentWidth.value) else density.run { state.loadingRunningLength.value.toPx() }
+            NgikutLoadingType.FromEnd -> if (!startLoadingState.value) (scrWidthInPx + loadingContentWidth.value) else density.run { scrWidthInPx - (state.loadingRunningLength.value.toPx() * 2) }
             NgikutLoadingType.MiddleWithBlurryBackground -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.Middle -> scrWidthInPx / 2 - loadingContentWidth.value / 2
         },
         animationSpec = TweenSpec(runDuration)
     )
 
-//    BottomSheetScaffold(
-//        modifier = modifier,
-//        scaffoldState =,
-//        sheetContent =,
-//        topBar =,
-//        floatingActionButton =,
-//        floatingActionButtonPosition =,
-//        sheetGesturesEnabled =,
-//        sheetShape =,
-//        sheetElevation =,
-//        sheetBackgroundColor =,
-//        sheetContentColor =,
-//        sheetPeekHeight =,
-//        drawerContent =,
-//        drawerGesturesEnabled =,
-//        drawerShape =,
-//        drawerElevation =,
-//        drawerBackgroundColor =,
-//        drawerContentColor =,
-//        drawerScrimColor =,
-//        backgroundColor =,
-//        contentColor =,
-//    ) {
-    Scaffold(
-//            bottomBar =
-    ) {
-        Box(modifier = modifier) {
-            content()
-            if (loadingProgress.value > 0f && loadingType == NgikutLoadingType.MiddleWithBlurryBackground) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = loadingProgress.value * 0.3f))
-                        .clickable(
-                            enabled = false,
-                            onClick = { /*Let this empty, this section used to prevent user from operating/clicking stuffs behind the box*/ }
-                        )
-                )
-            }
+    LaunchedEffect(key1 = state.isLoading.value){
+        delay(200)
+        startLoadingState.value = state.isLoading.value
+    }
 
+
+    Box(modifier = modifier) {
+        content()
+
+        if (loadingProgress.value > 0f && loadingType == NgikutLoadingType.MiddleWithBlurryBackground) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = loadingProgress.value * 0.3f))
+                    .clickable(
+                        enabled = false,
+                        onClick = { /*Let this empty, this section used to prevent user from operating/clicking stuffs behind the box*/ }
+                    )
+            )
+        }
+
+        if(state.isLoading.value){
             when {
                 (loadingType == NgikutLoadingType.Middle || loadingType == NgikutLoadingType.MiddleWithBlurryBackground) -> {
                     Box(
