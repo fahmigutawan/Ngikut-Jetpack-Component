@@ -5,5 +5,6 @@ enum class NgikutLoadingType {
     FromEnd,
     FromTop,
     FromBottom,
+    Middle,
     MiddleWithBlurryBackground
 }
