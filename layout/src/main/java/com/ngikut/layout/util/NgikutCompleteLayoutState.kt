@@ -10,13 +10,13 @@ import androidx.compose.ui.unit.dp
 @SuppressLint("ComposableNaming")
 @Composable
 fun rememberNgikutCompleteLayoutState(
-    initialState:Boolean,
+    state:Boolean,
     loadingRunningLength: Dp = 64.dp
 ):NgikutCompleteLayoutState {
     return remember{
-        NgikutCompleteLayoutState(initialState, loadingRunningLength)
+        NgikutCompleteLayoutState(state, loadingRunningLength)
     }.apply {
-        this.isLoading.value = initialState
+        this.isLoading.value = state
         this.loadingRunningLength.value = loadingRunningLength
     }
 }
@@ -26,6 +26,5 @@ class NgikutCompleteLayoutState(
     loadingRunningLength: Dp
 ) {
     val isLoading = mutableStateOf(isLoading)
-    val initialValue = isLoading
     val loadingRunningLength = mutableStateOf(loadingRunningLength)
 }

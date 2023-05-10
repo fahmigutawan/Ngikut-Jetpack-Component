@@ -32,6 +32,7 @@ import kotlin.math.roundToInt
 fun NgikutCompleteLayout(
     modifier: Modifier = Modifier,
     state: NgikutCompleteLayoutState,
+    runDuration: Int = 400,
     loadingIndicatorColor: Color = Color.Black,
     loadingType: NgikutLoadingType = NgikutLoadingType.FromTop,
     content: @Composable (() -> Unit)
@@ -43,27 +44,29 @@ fun NgikutCompleteLayout(
     val loadingContentWidth = remember { mutableStateOf(0f) }
     val loadingProgress = animateFloatAsState(
         targetValue = if (!state.isLoading.value) 0f else 1f,
-        animationSpec = TweenSpec(durationMillis = 500)
+        animationSpec = TweenSpec(durationMillis = 200)
     )
     val loadingAnimateY = animateFloatAsState(
         targetValue = when (loadingType) {
             NgikutLoadingType.FromTop -> if (!state.isLoading.value) (0 - loadingContentHeight.value) else density.run { state.loadingRunningLength.value.toPx() }
-            NgikutLoadingType.FromBottom -> if (!state.isLoading.value) (scrHeightInPx + loadingContentHeight.value) else density.run { scrHeightInPx - (state.loadingRunningLength.value.toPx()*2) }
+            NgikutLoadingType.FromBottom -> if (!state.isLoading.value) (scrHeightInPx + loadingContentHeight.value) else density.run { scrHeightInPx - (state.loadingRunningLength.value.toPx() * 2) }
             NgikutLoadingType.FromStart -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.FromEnd -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.MiddleWithBlurryBackground -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.Middle -> scrHeightInPx / 2 - loadingContentHeight.value / 2
-        }
+        },
+        animationSpec = TweenSpec(runDuration)
     )
     val loadingAnimateX = animateFloatAsState(
         targetValue = when (loadingType) {
             NgikutLoadingType.FromTop -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.FromBottom -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.FromStart -> if (!state.isLoading.value) (0 - loadingContentWidth.value) else density.run { state.loadingRunningLength.value.toPx() }
-            NgikutLoadingType.FromEnd -> if (!state.isLoading.value) (scrWidthInPx + loadingContentWidth.value) else density.run { scrWidthInPx - (state.loadingRunningLength.value.toPx()*2) }
+            NgikutLoadingType.FromEnd -> if (!state.isLoading.value) (scrWidthInPx + loadingContentWidth.value) else density.run { scrWidthInPx - (state.loadingRunningLength.value.toPx() * 2) }
             NgikutLoadingType.MiddleWithBlurryBackground -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.Middle -> scrWidthInPx / 2 - loadingContentWidth.value / 2
-        }
+        },
+        animationSpec = TweenSpec(runDuration)
     )
 
 //    BottomSheetScaffold(
@@ -106,20 +109,54 @@ fun NgikutCompleteLayout(
                 )
             }
 
-            if (loadingProgress.value > 0f) {
-                when {
-                    (loadingType == NgikutLoadingType.Middle || loadingType == NgikutLoadingType.MiddleWithBlurryBackground) -> {
+            when {
+                (loadingType == NgikutLoadingType.Middle || loadingType == NgikutLoadingType.MiddleWithBlurryBackground) -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier
+                                .shadow(
+                                    shape = CircleShape,
+                                    elevation = 10.dp,
+                                    ambientColor = loadingIndicatorColor.copy(alpha = loadingProgress.value),
+                                    spotColor = loadingIndicatorColor.copy(alpha = loadingProgress.value)
+                                )
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .onSizeChanged {
+                                    density.run {
+                                        loadingContentHeight.value = it.height
+                                            .toDp()
+                                            .toPx()
+                                        loadingContentWidth.value = it.width
+                                            .toDp()
+                                            .toPx()
+                                    }
+                                }
                         ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(42.dp)
+                                    .padding(8.dp),
+                                strokeWidth = 3.dp,
+                                color = loadingIndicatorColor.copy(alpha = loadingProgress.value)
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Layout(
+                        content = {
                             Box(
                                 modifier = Modifier
                                     .shadow(
                                         shape = CircleShape,
                                         elevation = 10.dp,
-                                        ambientColor = loadingIndicatorColor.copy(alpha = loadingProgress.value),
-                                        spotColor = loadingIndicatorColor.copy(alpha = loadingProgress.value)
+                                        clip = false,
+                                        spotColor = Color.Black.copy(alpha = loadingProgress.value),
+                                        ambientColor = Color.Black.copy(alpha = loadingProgress.value)
                                     )
                                     .clip(CircleShape)
                                     .background(Color.White)
@@ -142,65 +179,27 @@ fun NgikutCompleteLayout(
                                     color = loadingIndicatorColor.copy(alpha = loadingProgress.value)
                                 )
                             }
-                        }
-                    }
-                    else -> {
-                        Layout(
-                            content = {
-                                Box(
-                                    modifier = Modifier
-                                        .shadow(
-                                            shape = CircleShape,
-                                            elevation = 10.dp,
-                                            clip = false,
-                                            spotColor = Color.Black.copy(alpha = loadingProgress.value),
-                                            ambientColor = Color.Black.copy(alpha = loadingProgress.value)
-                                        )
-                                        .clip(CircleShape)
-                                        .background(Color.White)
-                                        .onSizeChanged {
-                                            density.run {
-                                                loadingContentHeight.value = it.height
-                                                    .toDp()
-                                                    .toPx()
-                                                loadingContentWidth.value = it.width
-                                                    .toDp()
-                                                    .toPx()
-                                            }
-                                        }
-                                ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier
-                                            .size(42.dp)
-                                            .padding(8.dp),
-                                        strokeWidth = 3.dp,
-                                        color = loadingIndicatorColor.copy(alpha = loadingProgress.value)
+                        },
+                        measurePolicy = { measurables, constratins ->
+                            val placeable = measurables.map {
+                                it.measure(constratins)
+                            }
+
+                            layout(
+                                width = constratins.minWidth,
+                                height = constratins.minHeight
+                            ) {
+                                placeable.forEach {
+                                    it.place(
+                                        loadingAnimateX.value.roundToInt(),
+                                        loadingAnimateY.value.roundToInt()
                                     )
                                 }
-                            },
-                            measurePolicy = { measurables, constratins ->
-                                val placeable = measurables.map {
-                                    it.measure(constratins)
-                                }
-
-                                layout(
-                                    width = constratins.minWidth,
-                                    height = constratins.minHeight
-                                ) {
-                                    placeable.forEach {
-                                        it.place(
-                                            loadingAnimateX.value.roundToInt(),
-                                            loadingAnimateY.value.roundToInt()
-                                        )
-                                    }
-                                }
                             }
-                        )
-                    }
+                        }
+                    )
                 }
-
             }
-
         }
     }
 }
