@@ -21,7 +21,7 @@
 `Ngikut Jetpack-Component` is a library that including components that might be used on most Android application. Now `Ngikut` is only available for Jetpack Compose, but gate not closed if I also make it into other environment.
 
 # Preparation
-Before you able to accessing `Ngikut`, you have to know that we are using `Jitpack` to make this library public. So you have to include Jitpack inside your project first.
+Before you able to access `Ngikut`, you have to know that we are using `Jitpack` to make this library public. So you have to include Jitpack inside your project first.
 
 ### 1. Setup for Jitpack
 -   For old version of gradle (before arctic fox update)
@@ -54,7 +54,7 @@ Before you able to accessing `Ngikut`, you have to know that we are using `Jitpa
     
 ### 2. Setup Ngikut to Your Dependency
 
--   After succesfully including Jitpack, right now you able to implement `Cisu` in your project.
+-   After succesfully including Jitpack, not you can implement `Ngikut` in your project.
 
     Add this to your `build.gradle` (app scope) :
     ```gradle
@@ -68,7 +68,7 @@ Before you able to accessing `Ngikut`, you have to know that we are using `Jitpa
 
 # Documentation
 
-### 1. [Cisu Loading Layout](https://github.com/fahmirumagutawan/Cisu-Jetpack-Component/blob/master/docs/CisuSplash.md) 
+### 1. [Ngikut Loading Layout](https://github.com/fahmirumagutawan/Cisu-Jetpack-Component/blob/master/docs/CisuSplash.md) 
 - `Ngikut Loading Layout` is a composable layout to place your content that include some various loading style.
 
 # Contact Me
