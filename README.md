@@ -68,7 +68,7 @@ Before you able to access `Ngikut`, you have to know that we are using `Jitpack`
 
 # Documentation
 
-### 1. [Ngikut Loading Layout](https://github.com/fahmirumagutawan/Cisu-Jetpack-Component/blob/master/docs/CisuSplash.md) 
+### 1. [Ngikut Loading Layout](https://github.com/fahmirumagutawan/Ngikut-Jetpack-Component/tree/v1.0/layout) 
 - `Ngikut Loading Layout` is a composable layout to place your content that include some various loading style.
 
 # Contact Me
