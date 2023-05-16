@@ -30,7 +30,6 @@ import kotlin.math.roundToInt
 fun NgikutLoadingLayout(
     modifier: Modifier = Modifier,
     state: NgikutLoadingLayoutState,
-    runDuration: Int = 400,
     loadingIndicatorColor: Color = Color.Black,
     loadingType: NgikutLoadingType = NgikutLoadingType.FromTop,
     content: @Composable (() -> Unit)
@@ -54,7 +53,7 @@ fun NgikutLoadingLayout(
             NgikutLoadingType.MiddleWithBlurryBackground -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.Middle -> scrHeightInPx / 2 - loadingContentHeight.value / 2
         },
-        animationSpec = TweenSpec(runDuration)
+        animationSpec = TweenSpec(400)
     )
     val loadingAnimateX = animateFloatAsState(
         targetValue = when (loadingType) {
@@ -65,7 +64,7 @@ fun NgikutLoadingLayout(
             NgikutLoadingType.MiddleWithBlurryBackground -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.Middle -> scrWidthInPx / 2 - loadingContentWidth.value / 2
         },
-        animationSpec = TweenSpec(runDuration)
+        animationSpec = TweenSpec(400)
     )
 
     LaunchedEffect(key1 = state.isLoading.value){
