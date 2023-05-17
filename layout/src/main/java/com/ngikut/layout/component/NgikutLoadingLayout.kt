@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ngikut.layout.util.NgikutLoadingLayoutState
 import com.ngikut.layout.util.NgikutLoadingType
@@ -32,6 +33,7 @@ fun NgikutLoadingLayout(
     state: NgikutLoadingLayoutState,
     loadingIndicatorColor: Color = Color.Black,
     loadingType: NgikutLoadingType = NgikutLoadingType.FromTop,
+    loadingRunningLength: Dp = 64.dp,
     content: @Composable (() -> Unit)
 ) {
     val density = LocalDensity.current
@@ -46,8 +48,8 @@ fun NgikutLoadingLayout(
     )
     val loadingAnimateY = animateFloatAsState(
         targetValue = when (loadingType) {
-            NgikutLoadingType.FromTop -> if (!startLoadingState.value) (0 - loadingContentHeight.value) else density.run { state.loadingRunningLength.value.toPx() }
-            NgikutLoadingType.FromBottom -> if (!startLoadingState.value) (scrHeightInPx + loadingContentHeight.value) else density.run { scrHeightInPx - (state.loadingRunningLength.value.toPx() * 2) }
+            NgikutLoadingType.FromTop -> if (!startLoadingState.value) (0 - loadingContentHeight.value) else density.run { loadingRunningLength.toPx() }
+            NgikutLoadingType.FromBottom -> if (!startLoadingState.value) (scrHeightInPx + loadingContentHeight.value) else density.run { scrHeightInPx - (loadingRunningLength.toPx() * 2) }
             NgikutLoadingType.FromStart -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.FromEnd -> scrHeightInPx / 2 - loadingContentHeight.value / 2
             NgikutLoadingType.MiddleWithBlurryBackground -> scrHeightInPx / 2 - loadingContentHeight.value / 2
@@ -59,8 +61,8 @@ fun NgikutLoadingLayout(
         targetValue = when (loadingType) {
             NgikutLoadingType.FromTop -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.FromBottom -> scrWidthInPx / 2 - loadingContentWidth.value / 2
-            NgikutLoadingType.FromStart -> if (!startLoadingState.value) (0 - loadingContentWidth.value) else density.run { state.loadingRunningLength.value.toPx() }
-            NgikutLoadingType.FromEnd -> if (!startLoadingState.value) (scrWidthInPx + loadingContentWidth.value) else density.run { scrWidthInPx - (state.loadingRunningLength.value.toPx() * 2) }
+            NgikutLoadingType.FromStart -> if (!startLoadingState.value) (0 - loadingContentWidth.value) else density.run { loadingRunningLength.toPx() }
+            NgikutLoadingType.FromEnd -> if (!startLoadingState.value) (scrWidthInPx + loadingContentWidth.value) else density.run { scrWidthInPx - (loadingRunningLength.toPx() * 2) }
             NgikutLoadingType.MiddleWithBlurryBackground -> scrWidthInPx / 2 - loadingContentWidth.value / 2
             NgikutLoadingType.Middle -> scrWidthInPx / 2 - loadingContentWidth.value / 2
         },
