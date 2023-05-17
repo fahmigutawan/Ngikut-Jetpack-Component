@@ -36,6 +36,7 @@ fun NgikutLoadingLayout(
     loadingRunningLength: Dp = 64.dp,
     content: @Composable (() -> Unit)
 ) {
+    val scaffoldState = rememberScaffoldState()
     val density = LocalDensity.current
     val scrHeightInPx = density.run { LocalConfiguration.current.screenHeightDp.dp.toPx() }
     val scrWidthInPx = density.run { LocalConfiguration.current.screenWidthDp.dp.toPx() }
@@ -74,71 +75,38 @@ fun NgikutLoadingLayout(
         startLoadingState.value = state.isLoading.value
     }
 
+    Scaffold(
+        scaffoldState = scaffoldState
+    ) {
+        Box(modifier = modifier) {
+            content()
 
-    Box(modifier = modifier) {
-        content()
+            if (loadingProgress.value > 0f && loadingType == NgikutLoadingType.MiddleWithBlurryBackground) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = loadingProgress.value * 0.3f))
+                        .clickable(
+                            enabled = false,
+                            onClick = { /*Let this empty, this section used to prevent user from operating/clicking stuffs behind the box*/ }
+                        )
+                )
+            }
 
-        if (loadingProgress.value > 0f && loadingType == NgikutLoadingType.MiddleWithBlurryBackground) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = loadingProgress.value * 0.3f))
-                    .clickable(
-                        enabled = false,
-                        onClick = { /*Let this empty, this section used to prevent user from operating/clicking stuffs behind the box*/ }
-                    )
-            )
-        }
-
-        if(state.isLoading.value){
-            when {
-                (loadingType == NgikutLoadingType.Middle || loadingType == NgikutLoadingType.MiddleWithBlurryBackground) -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
+            if(state.isLoading.value){
+                when {
+                    (loadingType == NgikutLoadingType.Middle || loadingType == NgikutLoadingType.MiddleWithBlurryBackground) -> {
                         Box(
-                            modifier = Modifier
-                                .shadow(
-                                    shape = CircleShape,
-                                    elevation = 10.dp,
-                                    ambientColor = loadingIndicatorColor.copy(alpha = loadingProgress.value),
-                                    spotColor = loadingIndicatorColor.copy(alpha = loadingProgress.value)
-                                )
-                                .clip(CircleShape)
-                                .background(Color.White)
-                                .onSizeChanged {
-                                    density.run {
-                                        loadingContentHeight.value = it.height
-                                            .toDp()
-                                            .toPx()
-                                        loadingContentWidth.value = it.width
-                                            .toDp()
-                                            .toPx()
-                                    }
-                                }
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .size(42.dp)
-                                    .padding(8.dp),
-                                strokeWidth = 3.dp,
-                                color = loadingIndicatorColor.copy(alpha = loadingProgress.value)
-                            )
-                        }
-                    }
-                }
-                else -> {
-                    Layout(
-                        content = {
                             Box(
                                 modifier = Modifier
                                     .shadow(
                                         shape = CircleShape,
                                         elevation = 10.dp,
-                                        clip = false,
-                                        spotColor = Color.Black.copy(alpha = loadingProgress.value),
-                                        ambientColor = Color.Black.copy(alpha = loadingProgress.value)
+                                        ambientColor = loadingIndicatorColor.copy(alpha = loadingProgress.value),
+                                        spotColor = loadingIndicatorColor.copy(alpha = loadingProgress.value)
                                     )
                                     .clip(CircleShape)
                                     .background(Color.White)
@@ -161,25 +129,61 @@ fun NgikutLoadingLayout(
                                     color = loadingIndicatorColor.copy(alpha = loadingProgress.value)
                                 )
                             }
-                        },
-                        measurePolicy = { measurables, constratins ->
-                            val placeable = measurables.map {
-                                it.measure(constratins)
-                            }
-
-                            layout(
-                                width = constratins.minWidth,
-                                height = constratins.minHeight
-                            ) {
-                                placeable.forEach {
-                                    it.place(
-                                        loadingAnimateX.value.roundToInt(),
-                                        loadingAnimateY.value.roundToInt()
+                        }
+                    }
+                    else -> {
+                        Layout(
+                            content = {
+                                Box(
+                                    modifier = Modifier
+                                        .shadow(
+                                            shape = CircleShape,
+                                            elevation = 10.dp,
+                                            clip = false,
+                                            spotColor = Color.Black.copy(alpha = loadingProgress.value),
+                                            ambientColor = Color.Black.copy(alpha = loadingProgress.value)
+                                        )
+                                        .clip(CircleShape)
+                                        .background(Color.White)
+                                        .onSizeChanged {
+                                            density.run {
+                                                loadingContentHeight.value = it.height
+                                                    .toDp()
+                                                    .toPx()
+                                                loadingContentWidth.value = it.width
+                                                    .toDp()
+                                                    .toPx()
+                                            }
+                                        }
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(42.dp)
+                                            .padding(8.dp),
+                                        strokeWidth = 3.dp,
+                                        color = loadingIndicatorColor.copy(alpha = loadingProgress.value)
                                     )
                                 }
+                            },
+                            measurePolicy = { measurables, constratins ->
+                                val placeable = measurables.map {
+                                    it.measure(constratins)
+                                }
+
+                                layout(
+                                    width = constratins.minWidth,
+                                    height = constratins.minHeight
+                                ) {
+                                    placeable.forEach {
+                                        it.place(
+                                            loadingAnimateX.value.roundToInt(),
+                                            loadingAnimateY.value.roundToInt()
+                                        )
+                                    }
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
