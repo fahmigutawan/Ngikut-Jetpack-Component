@@ -1,6 +1,7 @@
 package com.ngikut.layout.util
 
 import android.annotation.SuppressLint
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.*
 
 @SuppressLint("ComposableNaming")
@@ -20,21 +21,26 @@ class NgikutLoadingLayoutState(
 ) {
     var isLoading by mutableStateOf(isLoading)
     var snackbarMessage by mutableStateOf("")
-    var snackbarAction by mutableStateOf({})
+    var snackbarAction:(SnackbarHostState) -> Unit by mutableStateOf({})
+    var snackbarActionLabel by mutableStateOf("")
     var isSnackbarActive by mutableStateOf(false)
     var isSnackbarWithActionActive by mutableStateOf(false)
 
     fun showSnackbar(message:String){
+        isSnackbarActive = true
         snackbarMessage = message
     }
 
-    fun showSnackbarWithAction(message:String, action:() -> Unit){
+    fun showSnackbarWithAction(message:String, actionLabel:String, action:(SnackbarHostState) -> Unit){
+        isSnackbarWithActionActive = true
         snackbarMessage = message
         snackbarAction = action
+        snackbarActionLabel = actionLabel
     }
 
     fun resetSnackbarData(){
         snackbarMessage = ""
+        snackbarActionLabel = ""
         snackbarAction = {}
         isSnackbarActive = false
         isSnackbarWithActionActive = false

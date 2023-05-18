@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val loading = remember { mutableStateOf(false) }
-                    val pos = remember{ mutableStateOf(NgikutLoadingType.FromTop) }
+                    val pos = remember { mutableStateOf(NgikutLoadingType.FromTop) }
                     val state = rememberNgikutLoadingLayoutState(
                         state = loading.value
                     )
@@ -38,7 +38,10 @@ class MainActivity : ComponentActivity() {
                         state = state,
                         loadingType = pos.value
                     ) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Button(
                                     onClick = {
@@ -74,6 +77,28 @@ class MainActivity : ComponentActivity() {
                                     }
                                 ) {
                                     Text(text = "END")
+                                }
+
+                                Button(
+                                    onClick = {
+                                        state.showSnackbar("SNACKBAR WITHOUT ACTION")
+                                    }
+                                ) {
+                                    Text(text = "SHOW SNACKBAR")
+                                }
+
+                                Button(
+                                    onClick = {
+                                        state.showSnackbarWithAction(
+                                            "SNACKBAR WITHOUT ACTION",
+                                            actionLabel = "TUTUP",
+                                            action = {
+                                                state.resetSnackbarData()
+                                            }
+                                        )
+                                    }
+                                ) {
+                                    Text(text = "SHOW SNACKBAR WITH ACTION")
                                 }
                             }
                         }

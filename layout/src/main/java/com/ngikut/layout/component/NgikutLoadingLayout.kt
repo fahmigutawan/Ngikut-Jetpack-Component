@@ -31,7 +31,7 @@ import kotlin.math.roundToInt
 fun NgikutLoadingLayout(
     modifier: Modifier = Modifier,
     state: NgikutLoadingLayoutState,
-    snackbarHost: (SnackbarHostState) -> Unit,
+    snackbarHost: @Composable ((SnackbarHostState) -> Unit) = { SnackbarHost(it) },
     loadingIndicatorColor: Color = Color.Black,
     loadingType: NgikutLoadingType = NgikutLoadingType.FromTop,
     loadingRunningLength: Dp = 64.dp,
@@ -71,19 +71,40 @@ fun NgikutLoadingLayout(
         animationSpec = TweenSpec(400)
     )
 
-    if(state.isSnackbarActive){
+    if (state.isSnackbarActive) {
         state.isSnackbarWithActionActive = false
 
-        LaunchedEffect(key1 = true){
+        LaunchedEffect(key1 = true) {
+            val snackbarData = scaffoldState.snackbarHostState.showSnackbar(
+                message = state.snackbarMessage,
+                duration = SnackbarDuration.Short
+            )
 
+            if(snackbarData == SnackbarResult.Dismissed){
+                state.resetSnackbarData()
+            }
         }
     }
 
-    if(state.isSnackbarWithActionActive){
+    if (state.isSnackbarWithActionActive) {
         state.isSnackbarActive = false
 
-        LaunchedEffect(key1 = true){
+        LaunchedEffect(key1 = true) {
+            val snackbarData = scaffoldState.snackbarHostState.showSnackbar(
+                message = state.snackbarMessage,
+                duration = SnackbarDuration.Short,
+                actionLabel = state.snackbarActionLabel
+            )
 
+            when(snackbarData){
+                SnackbarResult.Dismissed -> {
+                    state.resetSnackbarData()
+                }
+                SnackbarResult.ActionPerformed -> {
+                    state.snackbarAction(scaffoldState.snackbarHostState)
+                    state.resetSnackbarData()
+                }
+            }
         }
     }
 
@@ -94,8 +115,10 @@ fun NgikutLoadingLayout(
 
     Scaffold(
         scaffoldState = scaffoldState,
-        snackbarHost = {
-            snackbarHost(it)
+        snackbarHost = { host ->
+            snackbarHost?.let {
+                it(host)
+            }
         }
     ) {
         Box(modifier = modifier) {
