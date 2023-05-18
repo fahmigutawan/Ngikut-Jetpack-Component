@@ -31,6 +31,7 @@ import kotlin.math.roundToInt
 fun NgikutLoadingLayout(
     modifier: Modifier = Modifier,
     state: NgikutLoadingLayoutState,
+    snackbarHost: (SnackbarHostState) -> Unit,
     loadingIndicatorColor: Color = Color.Black,
     loadingType: NgikutLoadingType = NgikutLoadingType.FromTop,
     loadingRunningLength: Dp = 64.dp,
@@ -70,13 +71,32 @@ fun NgikutLoadingLayout(
         animationSpec = TweenSpec(400)
     )
 
-    LaunchedEffect(key1 = state.isLoading.value){
+    if(state.isSnackbarActive){
+        state.isSnackbarWithActionActive = false
+
+        LaunchedEffect(key1 = true){
+
+        }
+    }
+
+    if(state.isSnackbarWithActionActive){
+        state.isSnackbarActive = false
+
+        LaunchedEffect(key1 = true){
+
+        }
+    }
+
+    LaunchedEffect(key1 = state.isLoading) {
         delay(200)
-        startLoadingState.value = state.isLoading.value
+        startLoadingState.value = state.isLoading
     }
 
     Scaffold(
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        snackbarHost = {
+            snackbarHost(it)
+        }
     ) {
         Box(modifier = modifier) {
             content()
@@ -93,7 +113,7 @@ fun NgikutLoadingLayout(
                 )
             }
 
-            if(state.isLoading.value){
+            if (state.isLoading) {
                 when {
                     (loadingType == NgikutLoadingType.Middle || loadingType == NgikutLoadingType.MiddleWithBlurryBackground) -> {
                         Box(

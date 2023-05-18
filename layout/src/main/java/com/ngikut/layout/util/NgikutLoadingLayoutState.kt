@@ -1,13 +1,7 @@
 package com.ngikut.layout.util
 
 import android.annotation.SuppressLint
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.*
 
 @SuppressLint("ComposableNaming")
 @Composable
@@ -17,32 +11,32 @@ fun rememberNgikutLoadingLayoutState(
     return remember{
         NgikutLoadingLayoutState(state)
     }.apply {
-        this.isLoading.value = state
+        this.isLoading = state
     }
 }
 
 class NgikutLoadingLayoutState(
     isLoading:Boolean
 ) {
-    val isLoading = mutableStateOf(isLoading)
-    val snackbarMessage = mutableStateOf("")
-    val snackbarAction = mutableStateOf({})
-    val showSnackbar = mutableStateOf(false)
-    val showSnackbarWithAction = mutableStateOf(false)
+    var isLoading by mutableStateOf(isLoading)
+    var snackbarMessage by mutableStateOf("")
+    var snackbarAction by mutableStateOf({})
+    var isSnackbarActive by mutableStateOf(false)
+    var isSnackbarWithActionActive by mutableStateOf(false)
 
     fun showSnackbar(message:String){
-        snackbarMessage.value = message
+        snackbarMessage = message
     }
 
     fun showSnackbarWithAction(message:String, action:() -> Unit){
-        snackbarMessage.value = message
-        snackbarAction.value = action
+        snackbarMessage = message
+        snackbarAction = action
     }
 
     fun resetSnackbarData(){
-        snackbarMessage.value = ""
-        snackbarAction.value = {}
-        showSnackbar.value = false
-        showSnackbarWithAction.value = false
+        snackbarMessage = ""
+        snackbarAction = {}
+        isSnackbarActive = false
+        isSnackbarWithActionActive = false
     }
 }
